@@ -16,7 +16,7 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif
 header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;gap:12px}
 .header-logo{font-size:15px;font-weight:600;color:var(--accent);white-space:nowrap}
 
-main{flex:1;display:flex;flex-direction:column;align-items:center;padding:1rem 0.5rem 2rem;gap:1rem}
+main{flex:1;display:flex;flex-direction:column;align-items:center;padding:0 0 2rem;gap:1rem}
 #loading-screen{display:flex;flex-direction:column;align-items:center;gap:1rem;margin-top:5rem}
 .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -24,7 +24,7 @@ main{flex:1;display:flex;flex-direction:column;align-items:center;padding:1rem 0
 #error-screen .icon{font-size:48px}
 #error-screen p{font-size:14px;color:var(--text-secondary);line-height:1.7}
 #viewer-wrap{display:none;flex-direction:column;align-items:center;gap:1.25rem;width:100%}
-#flip-area{position:relative;width:90%;max-width:100%}
+#flip-area{position:relative;width:90%;max-width:100%;margin-top:1.5rem}
 #canvas-container{position:relative;width:100%;overflow:hidden;border-radius:6px;box-shadow:var(--shadow);background:#fff}
 #canvas-current,#canvas-next{display:block;max-width:100%;width:100%}
 #canvas-next{position:absolute;top:0;left:0;opacity:0;pointer-events:none}
@@ -43,7 +43,7 @@ main{flex:1;display:flex;flex-direction:column;align-items:center;padding:1rem 0
 #flip-area:hover .side-btn{opacity:1}
 .side-btn span{font-size:30px;color:rgba(0,0,0,0.3)}
 
-#controls{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 16px;width:90%;max-width:100%;flex-wrap:wrap;justify-content:center}
+#controls{display:flex;align-items:center;gap:10px;background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px;width:100%;flex-wrap:wrap;justify-content:center;position:sticky;top:52px;z-index:100;border-radius:0}
 .ctrl-group{display:flex;align-items:center;gap:6px}
 .ctrl-sep{width:1px;height:24px;background:var(--border)}
 button.ctrl-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:13px;color:var(--text-primary);cursor:pointer;transition:background .15s,border-color .15s,color .15s;font-family:inherit}
@@ -73,15 +73,6 @@ footer{text-align:center;padding:1.25rem;font-size:12px;color:var(--text-seconda
   </div>
 
   <div id="viewer-wrap">
-    <div id="flip-area">
-      <div id="canvas-container">
-        <canvas id="canvas-current"></canvas>
-        <canvas id="canvas-next"></canvas>
-
-      </div>
-      <div class="side-btn left"  onclick="flipPage(-1)"><span>&#8249;</span></div>
-      <div class="side-btn right" onclick="flipPage(1)"><span>&#8250;</span></div>
-    </div>
     <div id="controls">
       <div class="ctrl-group">
         <button class="ctrl-btn" id="prev-btn" onclick="flipPage(-1)" disabled>&#9664; 이전</button>
@@ -100,6 +91,14 @@ footer{text-align:center;padding:1.25rem;font-size:12px;color:var(--text-seconda
         <span class="zoom-label" id="zoom-label">100%</span>
         <button class="ctrl-btn" onclick="changeZoom(0.25)">&#43;</button>
       </div>
+    </div>
+    <div id="flip-area">
+      <div id="canvas-container">
+        <canvas id="canvas-current"></canvas>
+        <canvas id="canvas-next"></canvas>
+      </div>
+      <div class="side-btn left"  onclick="flipPage(-1)"><span>&#8249;</span></div>
+      <div class="side-btn right" onclick="flipPage(1)"><span>&#8250;</span></div>
     </div>
   </div>
 </main>
