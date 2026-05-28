@@ -23,7 +23,7 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .icon-btn{background:transparent;border:none;cursor:pointer;color:var(--text-secondary);font-size:14px;padding:2px 5px;border-radius:4px;transition:color 0.15s,background 0.15s;font-family:inherit;line-height:1}
 .icon-btn:hover{color:var(--accent);background:var(--accent-light)}
 .icon-btn:disabled{opacity:0.3;cursor:default}
-main{flex:1;display:flex;flex-direction:column;align-items:center;padding:2rem 1rem 3rem;gap:1.25rem}
+main{flex:1;display:flex;flex-direction:column;align-items:center;padding:1rem 0.5rem 2rem;gap:1rem}
 #loading-screen{display:flex;flex-direction:column;align-items:center;gap:1rem;margin-top:5rem}
 .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -31,7 +31,7 @@ main{flex:1;display:flex;flex-direction:column;align-items:center;padding:2rem 1
 #error-screen .icon{font-size:48px}
 #error-screen p{font-size:14px;color:var(--text-secondary);line-height:1.7}
 #viewer-wrap{display:none;flex-direction:column;align-items:center;gap:1.25rem;width:100%}
-#flip-area{position:relative;width:100%;max-width:760px}
+#flip-area{position:relative;width:100%;max-width:100%}
 #canvas-container{position:relative;width:100%;overflow:hidden;border-radius:6px;box-shadow:var(--shadow);background:#fff}
 #canvas-current,#canvas-next{display:block;max-width:100%;width:100%}
 #canvas-next{position:absolute;top:0;left:0;opacity:0;pointer-events:none}
@@ -49,8 +49,8 @@ main{flex:1;display:flex;flex-direction:column;align-items:center;padding:2rem 1
 .side-btn.right{right:0;background:linear-gradient(to left,rgba(0,0,0,0.07),transparent)}
 #flip-area:hover .side-btn{opacity:1}
 .side-btn span{font-size:30px;color:rgba(0,0,0,0.3)}
-#search-banner{display:none;background:#fffbe6;border:1px solid #ffe58f;border-radius:8px;padding:8px 16px;font-size:13px;color:#7c5c00;width:100%;max-width:760px;text-align:center}
-#controls{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 16px;width:100%;max-width:760px;flex-wrap:wrap;justify-content:center}
+#search-banner{display:none;background:#fffbe6;border:1px solid #ffe58f;border-radius:8px;padding:8px 16px;font-size:13px;color:#7c5c00;width:100%;max-width:100%;text-align:center}
+#controls{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 16px;width:100%;max-width:100%;flex-wrap:wrap;justify-content:center}
 .ctrl-group{display:flex;align-items:center;gap:6px}
 .ctrl-sep{width:1px;height:24px;background:var(--border)}
 button.ctrl-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:13px;color:var(--text-primary);cursor:pointer;transition:background .15s,border-color .15s,color .15s;font-family:inherit}
@@ -273,26 +273,43 @@ async function drawHL(pageNum,focusRi,focusMi){
   ch.width=vp.width; ch.height=vp.height;
   const tc=await pg.getTextContent();
   const kwL=searchKw.toLowerCase();
-  const txtL=tc.items.map(i=>i.str).join('').toLowerCase();
-  const offMap=[];
-  let off=0;
-  tc.items.forEach(item=>{offMap.push({item,start:off});off+=item.str.length;});
-  let mIdx=0,si=0;
-  while((si=txtL.indexOf(kwL,si))!==-1){
-    for(let oi=0;oi<offMap.length;oi++){
-      const {item,start}=offMap[oi];
-      if(si>=start&&si<start+item.str.length){
-        const ri=allResults.findIndex(r=>r.page===pageNum);
-        const isFocus=(ri===focusRi&&mIdx===focusMi);
-        ctxH.fillStyle=isFocus?'rgba(255,170,0,0.55)':'rgba(255,220,60,0.3)';
-        const tx=item.transform;
-        const charW=(item.width/Math.max(item.str.length,1))*scale;
-        const charOff=(si-start)*charW;
-        const x=tx[4]*scale+charOff;
-        const y=vp.height-tx[5]*scale-item.height*scale;
-        ctxH.fillRect(x,y,kwL.length*charW,item.height*scale*1.1);
-        break;
-      }
+
+  // 글자 단위 맵 생성: 각 글자의 정확한 x 좌표 추적
+  const charList=[];
+  tc.items.forEach(item=>{
+    if(!item.str) return;
+    const tx=item.transform;
+    const itemX=tx[4];
+    const itemY=tx[5];
+    const h=item.height;
+    const totalW=item.width;
+    const len=item.str.length;
+    for(let ci=0;ci<len;ci++){
+      charList.push({
+        ch: item.str[ci].toLowerCase(),
+        x: itemX + (len>1 ? (totalW/len)*ci : 0),
+        y: itemY,
+        w: len>1 ? totalW/len : totalW,
+        h: h
+      });
+    }
+  });
+
+  const fullText=charList.map(c=>c.ch).join('');
+  let mIdx=0, si=0;
+  const ri=allResults.findIndex(r=>r.page===pageNum);
+
+  while((si=fullText.indexOf(kwL,si))!==-1){
+    const isFocus=(ri===focusRi&&mIdx===focusMi);
+    ctxH.fillStyle=isFocus?'rgba(255,170,0,0.55)':'rgba(255,220,60,0.3)';
+
+    // 매칭된 글자들을 하나씩 직접 그리기
+    for(let ci=si;ci<si+kwL.length;ci++){
+      if(!charList[ci])continue;
+      const c=charList[ci];
+      const x=c.x*scale;
+      const y=vp.height - c.y*scale - c.h*scale;
+      ctxH.fillRect(x, y, c.w*scale+0.5, c.h*scale*1.15);
     }
     mIdx++; si+=kwL.length;
   }
