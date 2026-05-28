@@ -173,10 +173,14 @@ function jumpPage(){
   document.getElementById('page-jump').value='';
 }
 
+let zoomLevel=1.0;
+
 function changeZoom(d){
-  scale=Math.max(0.5,Math.min(3.5,scale+d));
-  document.getElementById('zoom-label').textContent=Math.round(scale/1.5*100)+'%';
-  if(pdfDoc) renderTo(curPage,cc,ctxC);
+  zoomLevel=Math.max(0.3,Math.min(3.0, Math.round((zoomLevel+d)*100)/100));
+  document.getElementById('zoom-label').textContent=Math.round(zoomLevel*100)+'%';
+  document.getElementById('canvas-container').style.transformOrigin='top center';
+  document.getElementById('canvas-container').style.transform='scale('+zoomLevel+')';
+  document.getElementById('canvas-container').style.marginBottom=(zoomLevel-1)*cc.height*0.5+'px';
 }
 
 cc.addEventListener('contextmenu',e=>e.preventDefault());
@@ -186,6 +190,8 @@ document.addEventListener('keydown',e=>{
   if(e.key==='ArrowRight'||e.key==='ArrowDown')flipPage(1);
   if(e.key==='ArrowLeft' ||e.key==='ArrowUp')  flipPage(-1);
 });
+document.addEventListener('wheel',e=>{if(e.ctrlKey)e.preventDefault();},{passive:false});
+document.addEventListener('keydown',e=>{if(e.ctrlKey&&(e.key==='+'||e.key==='-'||e.key==='='||e.key==='0'))e.preventDefault();});
 let tx0=0;
 document.getElementById('flip-area').addEventListener('touchstart',e=>{tx0=e.touches[0].clientX;},{passive:true});
 document.getElementById('flip-area').addEventListener('touchend',e=>{
