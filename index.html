@@ -5,328 +5,317 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>e북 뷰어</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --bg: #f5f3ee;
-    --surface: #ffffff;
-    --border: #e0ddd6;
-    --text-primary: #1a1a18;
-    --text-secondary: #6b6860;
-    --accent: #2d5a3d;
-    --accent-light: #e8f0eb;
-    --shadow: 0 4px 24px rgba(0,0,0,0.10);
-    --radius: 10px;
-  }
-
-  body {
-    font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
-    background: var(--bg);
-    color: var(--text-primary);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .header-logo {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--accent);
-  }
-
-  .header-file {
-    font-size: 13px;
-    color: var(--text-secondary);
-  }
-
-  main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2rem 1rem;
-    gap: 1.5rem;
-  }
-
-  #loading-screen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 4rem;
-  }
-
-  .spinner {
-    width: 36px;
-    height: 36px;
-    border: 3px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  #loading-text {
-    font-size: 14px;
-    color: var(--text-secondary);
-  }
-
-  #error-screen {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-    margin-top: 4rem;
-    text-align: center;
-  }
-
-  #error-screen .icon { font-size: 48px; }
-  #error-screen p { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
-
-  #controls {
-    display: none;
-    align-items: center;
-    gap: 10px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 10px 16px;
-    width: 100%;
-    max-width: 720px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .ctrl-group {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .ctrl-sep {
-    width: 1px;
-    height: 24px;
-    background: var(--border);
-  }
-
-  button.ctrl-btn {
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 6px 12px;
-    font-size: 13px;
-    color: var(--text-primary);
-    cursor: pointer;
-    transition: background 0.15s, border-color 0.15s;
-    font-family: inherit;
-  }
-
-  button.ctrl-btn:hover:not(:disabled) {
-    background: var(--accent-light);
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  button.ctrl-btn:disabled {
-    opacity: 0.35;
-    cursor: default;
-  }
-
-  .page-info {
-    font-size: 13px;
-    color: var(--text-secondary);
-    white-space: nowrap;
-  }
-
-  .page-info span {
-    color: var(--text-primary);
-    font-weight: 600;
-  }
-
-  #page-jump {
-    width: 52px;
-    font-size: 13px;
-    text-align: center;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 5px 6px;
-    font-family: inherit;
-    color: var(--text-primary);
-    background: var(--bg);
-  }
-
-  .zoom-label {
-    font-size: 13px;
-    color: var(--text-secondary);
-    min-width: 38px;
-    text-align: center;
-  }
-
-  #canvas-container {
-    display: none;
-    justify-content: center;
-    width: 100%;
-    max-width: 860px;
-  }
-
-  #pdf-canvas {
-    max-width: 100%;
-    display: block;
-    border-radius: 4px;
-    box-shadow: var(--shadow);
-  }
-
-  footer {
-    text-align: center;
-    padding: 1.5rem;
-    font-size: 12px;
-    color: var(--text-secondary);
-    border-top: 1px solid var(--border);
-    background: var(--surface);
-  }
-
-  @media (max-width: 600px) {
-    header { padding: 0 1rem; }
-  }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0ece4;--surface:#fff;--border:#ddd9d0;
+  --text-primary:#1a1a18;--text-secondary:#6b6860;
+  --accent:#2d5a3d;--accent-light:#e8f0eb;
+  --shadow:0 8px 32px rgba(0,0,0,0.15);
+}
+body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh;display:flex;flex-direction:column;user-select:none}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;gap:12px}
+.header-logo{font-size:15px;font-weight:600;color:var(--accent);white-space:nowrap}
+#search-wrap{display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:4px 10px;transition:border-color 0.2s}
+#search-wrap:focus-within{border-color:var(--accent)}
+#search-input{border:none;background:transparent;font-size:13px;color:var(--text-primary);font-family:inherit;width:160px;outline:none}
+#search-input::placeholder{color:var(--text-secondary)}
+#search-count{font-size:12px;color:var(--text-secondary);white-space:nowrap;min-width:44px}
+.icon-btn{background:transparent;border:none;cursor:pointer;color:var(--text-secondary);font-size:14px;padding:2px 5px;border-radius:4px;transition:color 0.15s,background 0.15s;font-family:inherit;line-height:1}
+.icon-btn:hover{color:var(--accent);background:var(--accent-light)}
+.icon-btn:disabled{opacity:0.3;cursor:default}
+main{flex:1;display:flex;flex-direction:column;align-items:center;padding:2rem 1rem 3rem;gap:1.25rem}
+#loading-screen{display:flex;flex-direction:column;align-items:center;gap:1rem;margin-top:5rem}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#error-screen{display:none;flex-direction:column;align-items:center;gap:.75rem;margin-top:4rem;text-align:center}
+#error-screen .icon{font-size:48px}
+#error-screen p{font-size:14px;color:var(--text-secondary);line-height:1.7}
+#viewer-wrap{display:none;flex-direction:column;align-items:center;gap:1.25rem;width:100%}
+#flip-area{position:relative;width:100%;max-width:760px}
+#canvas-container{position:relative;width:100%;overflow:hidden;border-radius:6px;box-shadow:var(--shadow);background:#fff}
+#canvas-current,#canvas-next{display:block;max-width:100%;width:100%}
+#canvas-next{position:absolute;top:0;left:0;opacity:0;pointer-events:none}
+#canvas-hl{position:absolute;top:0;left:0;pointer-events:none;z-index:5}
+@keyframes slideOutLeft{from{transform:translateX(0);opacity:1}to{transform:translateX(-100%);opacity:0}}
+@keyframes slideInRight{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes slideOutRight{from{transform:translateX(0);opacity:1}to{transform:translateX(100%);opacity:0}}
+@keyframes slideInLeft{from{transform:translateX(-100%);opacity:0}to{transform:translateX(0);opacity:1}}
+#canvas-current.out-left{animation:slideOutLeft .32s ease forwards}
+#canvas-current.out-right{animation:slideOutRight .32s ease forwards}
+#canvas-next.in-right{animation:slideInRight .32s ease forwards;opacity:1!important;pointer-events:auto}
+#canvas-next.in-left{animation:slideInLeft .32s ease forwards;opacity:1!important;pointer-events:auto}
+.side-btn{position:absolute;top:0;bottom:0;width:14%;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;z-index:10;cursor:pointer;border-radius:6px}
+.side-btn.left{left:0;background:linear-gradient(to right,rgba(0,0,0,0.07),transparent)}
+.side-btn.right{right:0;background:linear-gradient(to left,rgba(0,0,0,0.07),transparent)}
+#flip-area:hover .side-btn{opacity:1}
+.side-btn span{font-size:30px;color:rgba(0,0,0,0.3)}
+#search-banner{display:none;background:#fffbe6;border:1px solid #ffe58f;border-radius:8px;padding:8px 16px;font-size:13px;color:#7c5c00;width:100%;max-width:760px;text-align:center}
+#controls{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 16px;width:100%;max-width:760px;flex-wrap:wrap;justify-content:center}
+.ctrl-group{display:flex;align-items:center;gap:6px}
+.ctrl-sep{width:1px;height:24px;background:var(--border)}
+button.ctrl-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:13px;color:var(--text-primary);cursor:pointer;transition:background .15s,border-color .15s,color .15s;font-family:inherit}
+button.ctrl-btn:hover:not(:disabled){background:var(--accent-light);border-color:var(--accent);color:var(--accent)}
+button.ctrl-btn:disabled{opacity:.35;cursor:default}
+.page-info{font-size:13px;color:var(--text-secondary);white-space:nowrap}
+.page-info span{color:var(--text-primary);font-weight:600}
+#page-jump{width:52px;font-size:13px;text-align:center;border:1px solid var(--border);border-radius:6px;padding:5px 6px;font-family:inherit;color:var(--text-primary);background:var(--bg)}
+.zoom-label{font-size:13px;color:var(--text-secondary);min-width:38px;text-align:center}
+footer{text-align:center;padding:1.25rem;font-size:12px;color:var(--text-secondary);border-top:1px solid var(--border);background:var(--surface)}
+@media(max-width:540px){header{padding:0 .75rem}#search-input{width:90px}}
 </style>
 </head>
 <body>
-
 <header>
   <span class="header-logo">📖 e북 뷰어</span>
-  <span class="header-file" id="header-info"></span>
+  <div id="search-wrap">
+    <span style="font-size:14px;color:var(--text-secondary)">🔍</span>
+    <input type="text" id="search-input" placeholder="텍스트 찾기..." autocomplete="off"
+      oninput="onSearchInput()" onkeydown="onSearchKey(event)">
+    <span id="search-count"></span>
+    <button class="icon-btn" id="sp-btn" onclick="moveMatch(-1)" disabled title="이전">▲</button>
+    <button class="icon-btn" id="sn-btn" onclick="moveMatch(1)"  disabled title="다음">▼</button>
+    <button class="icon-btn" onclick="clearSearch()" title="지우기">✕</button>
+  </div>
 </header>
-
 <main>
   <div id="loading-screen">
     <div class="spinner"></div>
-    <p id="loading-text">파일을 불러오는 중...</p>
+    <p style="font-size:14px;color:var(--text-secondary)">파일을 불러오는 중...</p>
   </div>
-
   <div id="error-screen">
     <span class="icon">😥</span>
     <p>파일을 불러올 수 없습니다.<br>저장소에 <strong>book.pdf</strong> 파일이 있는지 확인해 주세요.</p>
   </div>
-
-  <div id="controls">
-    <div class="ctrl-group">
-      <button class="ctrl-btn" id="prev-btn" onclick="changePage(-1)" disabled>◀ 이전</button>
-      <span class="page-info"><span id="cur-page">1</span> / <span id="total-pages">1</span></span>
-      <button class="ctrl-btn" id="next-btn" onclick="changePage(1)">다음 ▶</button>
+  <div id="search-banner"></div>
+  <div id="viewer-wrap">
+    <div id="flip-area">
+      <div id="canvas-container">
+        <canvas id="canvas-current"></canvas>
+        <canvas id="canvas-next"></canvas>
+        <canvas id="canvas-hl"></canvas>
+      </div>
+      <div class="side-btn left"  onclick="flipPage(-1)"><span>&#8249;</span></div>
+      <div class="side-btn right" onclick="flipPage(1)"><span>&#8250;</span></div>
     </div>
-    <div class="ctrl-sep"></div>
-    <div class="ctrl-group">
-      <input type="number" id="page-jump" min="1" placeholder="페이지"
-        onkeydown="if(event.key==='Enter')jumpPage()">
-      <button class="ctrl-btn" onclick="jumpPage()">이동</button>
+    <div id="controls">
+      <div class="ctrl-group">
+        <button class="ctrl-btn" id="prev-btn" onclick="flipPage(-1)" disabled>&#9664; 이전</button>
+        <span class="page-info"><span id="cur-page">1</span> / <span id="total-pages">1</span></span>
+        <button class="ctrl-btn" id="next-btn" onclick="flipPage(1)">다음 &#9654;</button>
+      </div>
+      <div class="ctrl-sep"></div>
+      <div class="ctrl-group">
+        <input type="number" id="page-jump" min="1" placeholder="페이지"
+          onkeydown="if(event.key==='Enter')jumpPage()">
+        <button class="ctrl-btn" onclick="jumpPage()">이동</button>
+      </div>
+      <div class="ctrl-sep"></div>
+      <div class="ctrl-group">
+        <button class="ctrl-btn" onclick="changeZoom(-0.25)">&#8722;</button>
+        <span class="zoom-label" id="zoom-label">100%</span>
+        <button class="ctrl-btn" onclick="changeZoom(0.25)">&#43;</button>
+      </div>
     </div>
-    <div class="ctrl-sep"></div>
-    <div class="ctrl-group">
-      <button class="ctrl-btn" onclick="changeZoom(-0.25)">−</button>
-      <span class="zoom-label" id="zoom-label">100%</span>
-      <button class="ctrl-btn" onclick="changeZoom(0.25)">+</button>
-    </div>
-  </div>
-
-  <div id="canvas-container">
-    <canvas id="pdf-canvas"></canvas>
   </div>
 </main>
-
 <footer>이 뷰어는 다운로드 없이 브라우저에서만 열람 가능합니다.</footer>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+let pdfDoc=null,curPage=1,totalPages=0,scale=1.5,animating=false;
+let searchFlat=[],searchCur=-1,searchKw='',searchTimer=null,allResults=[];
+const cc=document.getElementById('canvas-current');
+const cn=document.getElementById('canvas-next');
+const ch=document.getElementById('canvas-hl');
+const ctxC=cc.getContext('2d');
+const ctxN=cn.getContext('2d');
+const ctxH=ch.getContext('2d');
 
-let pdfDoc = null, curPage = 1, totalPages = 0, scale = 1.5;
-let rendering = false, pendingPage = null;
-
-const canvas = document.getElementById('pdf-canvas');
-const ctx = canvas.getContext('2d');
-
-pdfjsLib.getDocument('book.pdf').promise.then(pdf => {
-  pdfDoc = pdf;
-  totalPages = pdf.numPages;
-  curPage = 1;
-  document.getElementById('total-pages').textContent = totalPages;
-  document.getElementById('page-jump').max = totalPages;
-  document.getElementById('header-info').textContent = totalPages + '페이지';
-  document.getElementById('loading-screen').style.display = 'none';
-  document.getElementById('controls').style.display = 'flex';
-  document.getElementById('canvas-container').style.display = 'flex';
-  renderPage(1);
-}).catch(() => {
-  document.getElementById('loading-screen').style.display = 'none';
-  document.getElementById('error-screen').style.display = 'flex';
+pdfjsLib.getDocument('book.pdf').promise.then(pdf=>{
+  pdfDoc=pdf; totalPages=pdf.numPages;
+  document.getElementById('total-pages').textContent=totalPages;
+  document.getElementById('page-jump').max=totalPages;
+  document.getElementById('loading-screen').style.display='none';
+  document.getElementById('viewer-wrap').style.display='flex';
+  renderTo(1,cc,ctxC);
+}).catch(()=>{
+  document.getElementById('loading-screen').style.display='none';
+  document.getElementById('error-screen').style.display='flex';
 });
 
-function renderPage(num) {
-  rendering = true;
-  document.getElementById('cur-page').textContent = num;
-  document.getElementById('prev-btn').disabled = num <= 1;
-  document.getElementById('next-btn').disabled = num >= totalPages;
-
-  pdfDoc.getPage(num).then(page => {
-    const vp = page.getViewport({ scale });
-    canvas.width = vp.width;
-    canvas.height = vp.height;
-    return page.render({ canvasContext: ctx, viewport: vp }).promise;
-  }).then(() => {
-    rendering = false;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    if (pendingPage !== null) {
-      const p = pendingPage; pendingPage = null; renderPage(p);
-    }
+function renderTo(num,cvs,ctx){
+  return pdfDoc.getPage(num).then(pg=>{
+    const vp=pg.getViewport({scale});
+    cvs.width=vp.width; cvs.height=vp.height;
+    ch.width=vp.width; ch.height=vp.height;
+    return pg.render({canvasContext:ctx,viewport:vp}).promise;
   });
 }
 
-function changePage(dir) {
-  const np = curPage + dir;
-  if (np < 1 || np > totalPages) return;
-  curPage = np;
-  if (rendering) pendingPage = curPage;
-  else renderPage(curPage);
+function updateUI(n){
+  document.getElementById('cur-page').textContent=n;
+  document.getElementById('prev-btn').disabled=n<=1;
+  document.getElementById('next-btn').disabled=n>=totalPages;
 }
 
-function jumpPage() {
-  const v = parseInt(document.getElementById('page-jump').value);
-  if (v >= 1 && v <= totalPages) {
-    curPage = v;
-    if (rendering) pendingPage = curPage;
-    else renderPage(curPage);
-    document.getElementById('page-jump').value = '';
+function flipPage(dir){
+  if(animating)return;
+  const np=curPage+dir;
+  if(np<1||np>totalPages)return;
+  animating=true;
+  renderTo(np,cn,ctxN).then(()=>{
+    const oc=dir>0?'out-left':'out-right';
+    const ic=dir>0?'in-right':'in-left';
+    cc.classList.add(oc); cn.classList.add(ic);
+    setTimeout(()=>{
+      cc.width=cn.width; cc.height=cn.height; ctxC.drawImage(cn,0,0);
+      cc.classList.remove(oc); cn.classList.remove(ic);
+      cn.style.opacity='0'; cn.style.pointerEvents='none';
+      curPage=np; updateUI(curPage); animating=false;
+      window.scrollTo({top:0,behavior:'smooth'});
+      if(searchKw) drawHL(curPage); else ctxH.clearRect(0,0,ch.width,ch.height);
+    },340);
+  });
+}
+
+function jumpPage(){
+  const v=parseInt(document.getElementById('page-jump').value);
+  if(v>=1&&v<=totalPages&&v!==curPage){
+    const target=v;
+    const go=()=>{
+      if(curPage===target){if(searchKw)drawHL(curPage);return;}
+      if(animating){setTimeout(go,380);return;}
+      flipPage(target>curPage?1:-1);
+      setTimeout(go,380);
+    };
+    go();
+  }
+  document.getElementById('page-jump').value='';
+}
+
+function changeZoom(d){
+  scale=Math.max(0.5,Math.min(3.5,scale+d));
+  document.getElementById('zoom-label').textContent=Math.round(scale/1.5*100)+'%';
+  if(pdfDoc) renderTo(curPage,cc,ctxC).then(()=>{if(searchKw)drawHL(curPage);});
+}
+
+function onSearchInput(){clearTimeout(searchTimer);searchTimer=setTimeout(runSearch,450);}
+function onSearchKey(e){
+  if(e.key==='Enter'){e.shiftKey?moveMatch(-1):moveMatch(1);}
+  if(e.key==='Escape')clearSearch();
+}
+
+async function runSearch(){
+  const kw=document.getElementById('search-input').value.trim();
+  searchKw=kw; searchFlat=[]; searchCur=-1; allResults=[];
+  ctxH.clearRect(0,0,ch.width,ch.height);
+  if(!kw||!pdfDoc){updateSUI();return;}
+  const banner=document.getElementById('search-banner');
+  banner.style.display='block'; banner.textContent='전체 문서에서 검색 중...';
+  const kwL=kw.toLowerCase();
+  for(let p=1;p<=totalPages;p++){
+    const pg=await pdfDoc.getPage(p);
+    const tc=await pg.getTextContent();
+    const txt=tc.items.map(i=>i.str).join('').toLowerCase();
+    let i=0,found=[];
+    while((i=txt.indexOf(kwL,i))!==-1){found.push(i);i+=kw.length;}
+    if(found.length){
+      const ri=allResults.length;
+      allResults.push({page:p,items:tc.items,found});
+      found.forEach((_,mi)=>searchFlat.push({page:p,ri,mi}));
+    }
+  }
+  updateSUI();
+  if(searchFlat.length){
+    let best=0;
+    for(let i=0;i<searchFlat.length;i++){if(searchFlat[i].page>=curPage){best=i;break;}}
+    searchCur=best; goMatch(searchCur);
   }
 }
 
-function changeZoom(delta) {
-  scale = Math.max(0.5, Math.min(3.5, scale + delta));
-  document.getElementById('zoom-label').textContent = Math.round(scale / 1.5 * 100) + '%';
-  if (pdfDoc) renderPage(curPage);
+function updateSUI(){
+  const tot=searchFlat.length;
+  const cnt=document.getElementById('search-count');
+  const banner=document.getElementById('search-banner');
+  const sp=document.getElementById('sp-btn');
+  const sn=document.getElementById('sn-btn');
+  if(!searchKw){cnt.textContent='';banner.style.display='none';sp.disabled=true;sn.disabled=true;return;}
+  if(tot===0){cnt.textContent='없음';banner.style.display='block';banner.textContent='"'+searchKw+'" 검색 결과가 없습니다.';sp.disabled=true;sn.disabled=true;}
+  else{cnt.textContent=(searchCur>=0?searchCur+1:1)+'/'+tot;banner.style.display='none';sp.disabled=tot<=1;sn.disabled=tot<=1;}
 }
 
-canvas.addEventListener('contextmenu', e => e.preventDefault());
-canvas.addEventListener('dragstart', e => e.preventDefault());
+function moveMatch(d){
+  if(!searchFlat.length)return;
+  searchCur=(searchCur+d+searchFlat.length)%searchFlat.length;
+  goMatch(searchCur);
+}
 
-document.addEventListener('keydown', e => {
-  if (!pdfDoc) return;
-  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changePage(1);
-  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') changePage(-1);
+function goMatch(idx){
+  if(idx<0||idx>=searchFlat.length)return;
+  const m=searchFlat[idx]; searchCur=idx; updateSUI();
+  if(m.page!==curPage){
+    const target=m.page;
+    const go=()=>{
+      if(curPage===target){drawHL(curPage,m.ri,m.mi);return;}
+      if(animating){setTimeout(go,380);return;}
+      flipPage(target>curPage?1:-1);
+      setTimeout(go,380);
+    };
+    go();
+  } else drawHL(curPage,m.ri,m.mi);
+}
+
+async function drawHL(pageNum,focusRi,focusMi){
+  ctxH.clearRect(0,0,ch.width,ch.height);
+  if(!searchKw||!pdfDoc)return;
+  const pg=await pdfDoc.getPage(pageNum);
+  const vp=pg.getViewport({scale});
+  ch.width=vp.width; ch.height=vp.height;
+  const tc=await pg.getTextContent();
+  const kwL=searchKw.toLowerCase();
+  const txtL=tc.items.map(i=>i.str).join('').toLowerCase();
+  const offMap=[];
+  let off=0;
+  tc.items.forEach(item=>{offMap.push({item,start:off});off+=item.str.length;});
+  let mIdx=0,si=0;
+  while((si=txtL.indexOf(kwL,si))!==-1){
+    for(let oi=0;oi<offMap.length;oi++){
+      const {item,start}=offMap[oi];
+      if(si>=start&&si<start+item.str.length){
+        const ri=allResults.findIndex(r=>r.page===pageNum);
+        const isFocus=(ri===focusRi&&mIdx===focusMi);
+        ctxH.fillStyle=isFocus?'rgba(255,170,0,0.55)':'rgba(255,220,60,0.3)';
+        const tx=item.transform;
+        const charW=(item.width/Math.max(item.str.length,1))*scale;
+        const charOff=(si-start)*charW;
+        const x=tx[4]*scale+charOff;
+        const y=vp.height-tx[5]*scale-item.height*scale;
+        ctxH.fillRect(x,y,kwL.length*charW,item.height*scale*1.1);
+        break;
+      }
+    }
+    mIdx++; si+=kwL.length;
+  }
+}
+
+function clearSearch(){
+  document.getElementById('search-input').value='';
+  searchKw=''; searchFlat=[]; searchCur=-1; allResults=[];
+  ctxH.clearRect(0,0,ch.width,ch.height); updateSUI();
+}
+
+cc.addEventListener('contextmenu',e=>e.preventDefault());
+cc.addEventListener('dragstart',e=>e.preventDefault());
+document.addEventListener('keydown',e=>{
+  if(!pdfDoc||document.activeElement===document.getElementById('search-input'))return;
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')flipPage(1);
+  if(e.key==='ArrowLeft' ||e.key==='ArrowUp')  flipPage(-1);
+});
+let tx0=0;
+document.getElementById('flip-area').addEventListener('touchstart',e=>{tx0=e.touches[0].clientX;},{passive:true});
+document.getElementById('flip-area').addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-tx0;
+  if(Math.abs(dx)>50)flipPage(dx<0?1:-1);
 });
 </script>
 </body>
